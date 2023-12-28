@@ -1,0 +1,15 @@
+
+library(ggplot2)
+library(tidyverse)
+library(clusterProfiler)
+library(stringi)
+library(GSVA)
+library(limma)
+library(psych)
+Expression_data <- read.csv("Expression_data.csv",row.names=1)
+RORA_CYT <- Expression_data[c("RORA", "GZMA", "PRF1"),] %>% t() %>% as.data.frame() 
+CYT_list <- list(CYT_list = c("GZMA", "PRF1"))
+CYT_score <- getSignatureScore(inputArr=RORA_CYT, signatureList=CYT_list, method=c("geometric_mean"))
+CYT_score <- apply(as.matrix(RORA_CYT[, CYT_list[[1]]]), 1, geometric.mean)
+cor_data <- cor_asymmetry(input1=RORA_CYT[,"RORA",drop = FALSE], CYT_score, cor_method="pearson")
+
